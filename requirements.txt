@@ -1,3 +1,0 @@
-spotipy
-rich
-python-dotenv
