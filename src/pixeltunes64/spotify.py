@@ -2,12 +2,15 @@
 
 from __future__ import annotations
 
+import os
 import logging
 from typing import Any
 
 from .config import SpotifyConfig
 from .errors import ConfigurationError, SpotifyServiceError
 from .models import TrackInfo
+
+os.environ.setdefault("SPOTIPY_ALLOW_INSECURE_TRANSPORT", "1")
 
 try:
     import spotipy as _spotipy

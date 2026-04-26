@@ -85,7 +85,7 @@ class SpotifyConfig:
             client_id=os.getenv("SPOTIPY_CLIENT_ID"),
             client_secret=os.getenv("SPOTIPY_CLIENT_SECRET"),
             redirect_uri=os.getenv("SPOTIPY_REDIRECT_URI", "http://127.0.0.1:9090"),
-            cache_path=os.getenv("SPOTIPY_CACHE_PATH", ".cache"),
+            cache_path=str(Path(os.getenv("SPOTIPY_CACHE_PATH", ".cache")).expanduser().resolve()),
             market=os.getenv("SPOTIPY_MARKET", "DE"),
             scope=tuple(scope),
         )
@@ -111,7 +111,8 @@ class MatrixConfig:
     hardware_mapping: str = "regular"
     gpio_slowdown: int = 2
     pwm_bits: int = 11
-    disable_hardware_pulsing: bool = True
+    disable_hardware_pulsing: bool = False
+    drop_privileges: bool = False
 
     @classmethod
     def from_env(cls) -> "MatrixConfig":
@@ -125,7 +126,8 @@ class MatrixConfig:
         default_hardware_mapping = "regular"
         default_gpio_slowdown = 2
         default_pwm_bits = 11
-        default_disable_hardware_pulsing = True
+        default_disable_hardware_pulsing = False
+        default_drop_privileges = False
 
         brightness = _env_int("MATRIX_BRIGHTNESS", default_brightness, minimum=1)
         return cls(
@@ -143,6 +145,7 @@ class MatrixConfig:
                 "MATRIX_DISABLE_HARDWARE_PULSING",
                 default_disable_hardware_pulsing,
             ),
+            drop_privileges=_env_bool("MATRIX_DROP_PRIVILEGES", default_drop_privileges),
         )
 
     @property

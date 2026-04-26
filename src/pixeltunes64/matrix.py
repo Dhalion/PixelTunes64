@@ -40,11 +40,9 @@ class RGBMatrixDisplay:
         options.cols = self._config.cols
         options.chain_length = self._config.chain_length
         options.parallel = self._config.parallel
-        options.brightness = self._config.brightness
         options.hardware_mapping = self._config.hardware_mapping
-        options.gpio_slowdown = self._config.gpio_slowdown
-        options.pwm_bits = self._config.pwm_bits
         options.disable_hardware_pulsing = self._config.disable_hardware_pulsing
+        options.drop_privileges = self._config.drop_privileges
 
         try:
             return RGBMatrix(options=options)
@@ -52,9 +50,8 @@ class RGBMatrixDisplay:
             raise MatrixDisplayError("RGB matrix hardware could not be initialized.") from exc
 
     def show(self, image: Image.Image) -> None:
-        frame = image.convert("RGB")
-        frame.thumbnail((self._matrix.width, self._matrix.height), Image.Resampling.LANCZOS)
-        self._matrix.SetImage(frame)
+        image.thumbnail((self._matrix.width, self._matrix.height), Image.LANCZOS)
+        self._matrix.SetImage(image.convert("RGB"))
 
     def clear(self) -> None:
         self._matrix.Clear()
